@@ -1,0 +1,71 @@
+export const investmentMonthlyData = [
+    {
+      title: "Eyes of the future A1",
+      investAmount: "₹ 599",
+      earnings: "₹ 1400",
+      returnPeriod: "1 Month",
+      periodicReturn: "₹ 1400",
+      totalEarnings: "₹ 1400",
+    },
+    {
+      title: "Eyes of the future A2",
+      investAmount: "₹ 999",
+      earnings: "₹ 2500",
+      returnPeriod: "1 Month",
+      periodicReturn: "₹ 2500",
+      totalEarnings: "₹ 2500",
+    },
+  ];
+  
+export const investmentData = [
+    [
+      {
+        title: "Daily income A",
+        investAmount: "₹ 251",
+        totalEarnings: "₹ 400",
+        returnPeriod: "30 Day",
+        periodicReturn: "₹ 13",
+        earningChances: "0 / 30",
+        buttonText: "Invest Now >",
+        buttonColor: "#3babd9",
+        textColor: "#fff",
+      },
+      {
+        title: "Monthly income A",
+        investAmount: "₹ 600",
+        totalEarnings: "₹ 1400",
+        returnPeriod: "1 Month",
+        periodicReturn: "₹ 1400",
+        earningChances: "0 / 1",
+        buttonText: "Not activated",
+        buttonColor: "#fff",
+        textColor: "#FFC107",
+        disabled: true,
+      },
+    ],
+    [
+      {
+        title: "Daily income B",
+        investAmount: "₹ 500",
+        totalEarnings: "₹ 1200",
+        returnPeriod: "30 Day",
+        periodicReturn: "₹ 40",
+        earningChances: "0 / 30",
+        buttonText: "Invest Now >",
+        buttonColor: "#3babd9",
+        textColor: "#fff",
+      },
+      {
+        title: "Monthly income B",
+        investAmount: "₹ 1,000",
+        totalEarnings: "₹ 2500",
+        returnPeriod: "1 Month",
+        periodicReturn: "₹ 2500",
+        earningChances: "0 / 1",
+        buttonText: "Not activated",
+        buttonColor: "#fff",
+        textColor: "#FFC107", 
+        disabled: true,
+      },
+    ],
+  ];
