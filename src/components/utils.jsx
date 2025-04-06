@@ -1,250 +1,123 @@
-
 import React, { useState } from "react";
-import {
-  Avatar, Box, Typography, Card,
-  CardContent, Button, BottomNavigation, BottomNavigationAction
-} from "@mui/material";
-import { styled } from "@mui/system";
-import MovingOutlinedIcon from '@mui/icons-material/MovingOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import { Box, Typography, Card, Avatar, Grid, Button, IconButton, Container } from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsIcon from "@mui/icons-material/Settings";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import RedeemIcon from "@mui/icons-material/Redeem";
+import FeedbackIcon from "@mui/icons-material/Feedback";
+import BuildIcon from "@mui/icons-material/Build";
+import InfoIcon from "@mui/icons-material/Info";
+import PaymentIcon from "@mui/icons-material/Payment";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import { useNavigate } from "react-router-dom";
+import BankAccountPopup from "./BankAccountPopup";
 
-const CustomTabs = styled(Box)({
-  display: "flex",
-  width: "100%",
-  backgroundColor: "#156fb2",
-  borderRadius: "10px 10px 0 0",
-  padding: "0px", // Removed padding to fix spacing issue
-  justifyContent: "space-between",
-  flexWrap: "nowrap"
-});
+const Account = () => {
+  const navigate = useNavigate();
+  const [openPopup, setOpenPopup] = useState(false);
 
-const CustomTab = styled(Button)(({ selected, color }) => ({
-  flex: 1,
-  textTransform: "none",
-  fontSize: "14px",
-  fontWeight: "bold",
-  borderRadius: "15px 15px 0 0",
-  backgroundColor: selected ? color : "#F0F0F0",
-  color: selected ? "#fff" : color,
-  margin: "0 2px", // Reduced margin
-  minWidth: "auto",
-}));
-
-const FutureFundApp = () => {
-  const [tabIndex, setTabIndex] = useState(0);
-  const [tabColor, setTabColor] = useState("#3babd9");
-  const [value, setValue] = useState('recents');
-
-  const handleTabChange = (index, color) => {
-    setTabIndex(index);
-    setTabColor(color);
-  };
-
-  const handleBottomNavigationChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const InvestmentCard = ({ data }) => (
-    <Card
-      sx={{
-        background: "linear-gradient(to right, #f0f8f8, #eef7f7)",
-        borderRadius: "10px",
-        padding: "15px",
-        boxShadow: "none",
-      }}
-    >
-      <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: "bold", textTransform: "capitalize" }}>
-          {data.title}
-        </Typography>
-        <Box display="flex" justifyContent="space-between" mt={1}>
-          <Typography>Invest Amount</Typography>
-          <Typography>
-            <AccountBalanceWalletIcon sx={{ fontSize: 16 }} /> {data.investAmount}
-          </Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Total Earnings</Typography>
-          <Typography>
-            <AccountBalanceWalletIcon sx={{ fontSize: 16 }} /> {data.totalEarnings}
-          </Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Return period</Typography>
-          <Typography sx={{ fontWeight: "bold" }}>{data.returnPeriod}</Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Periodic return</Typography>
-          <Typography>
-            <AccountBalanceWalletIcon sx={{ fontSize: 16 }} /> {data.periodicReturn}
-          </Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography>Earning Chances</Typography>
-          <Typography>{data.earningChances}</Typography>
-        </Box>
-        <Button
-          fullWidth
-          variant="contained"
-          sx={{
-            marginTop: "15px",
-            backgroundColor: data.buttonColor,
-            color: data.textColor,
-            fontWeight: "bold",
-            "&:hover": { backgroundColor: data.buttonColor },
-          }}
-        >
-          {data.buttonText} {data.buttonText === "Invest Now" && <ChevronRightIcon />}
-        </Button>
-      </CardContent>
-    </Card>
-  );
-
-  const investmentData = [
-    {
-      title: "Daily income A",
-      investAmount: "600",
-      totalEarnings: "6,012",
-      returnPeriod: "30 Day",
-      periodicReturn: "200",
-      earningChances: "0 / 30",
-      buttonText: "Invest Now",
-      buttonColor: "#07B3A3",
-      textColor: "#fff",
-    },
-    {
-      title: "Monthly income A",
-      investAmount: "500",
-      totalEarnings: "7,500",
-      returnPeriod: "1 Month",
-      periodicReturn: "7,500",
-      earningChances: "0 / 1",
-      buttonText: "Not activated yet",
-      buttonColor: "#fff",
-      textColor: "#FFC107",
-    },
+  const fundEntryItems = [
+    { name: "Billing List", icon: <ReceiptIcon color="primary" /> },
+    { name: "Withdrawal Records", icon: <AccountBalanceWalletIcon color="primary" /> },
+    { name: "Recharge Records", icon: <PaymentIcon color="primary" /> },
+    { name: "Commission Records", icon: <MonetizationOnIcon color="primary" /> },
+    { name: "Reward Records", icon: <RedeemIcon color="primary" /> },
+    { name: "My Feedback", icon: <FeedbackIcon color="primary" /> },
+    { name: "Self-Service", icon: <BuildIcon color="primary" /> },
+    { name: "About Us", icon: <InfoIcon color="primary" /> }
   ];
-  
+
+  const handleRechargeClick = () => {
+    navigate("/recharge");
+  };
+
+  const handleBankAccountClick = () => {
+    setOpenPopup(true);
+  };
 
   return (
-    <Box sx={{
-      width: "100%",
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "linear-gradient(to bottom, #E3F2FD, #ffffff)",
-      paddingBottom: "60px"
-    }}>
-      <Card elevation={3} sx={{
-        p: { xs: 2, sm: 4 },
-        backgroundColor: "#156fb2",
-        width: "90%",
-        maxWidth: "400px",
-        textAlign: "center",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
-      }}>
-        <CardContent sx={{ padding: "0 !important" }}> {/* Removed padding to fix spacing */}
-          <Box display="flex" alignItems="center" justifyContent="center" mb={1}>
-            <Avatar
-              src="/PN_logo.png"
-              alt="Company Logo"
-              sx={{ width: 56, height: 56, mr: 2 }}
-            />
+    <Box sx={{ width: "100vw", minHeight: "100vh", backgroundColor: "#156fb2", display: "flex", justifyContent: "center", alignItems: "center", padding: 2 }}>
+      <Container maxWidth="md" sx={{ backgroundColor: "white", borderRadius: "16px", boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)", padding: 3, position: "relative" }}>
+        <Box sx={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 1 }}>
+          <IconButton sx={{ backgroundColor: "#3babd9" }}><NotificationsIcon /></IconButton>
+          <IconButton sx={{ backgroundColor: "#3babd9" }}><SettingsIcon /></IconButton>
+        </Box>
+
+        <Box sx={{ background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", boxShadow: "0 4px 15px rgba(0, 242, 254, 0.3)", p: 2, borderRadius: "10px", position: "relative", textAlign: "left", marginTop: 6 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Box>
-              <Typography variant="h5" sx={{
-                fontSize: { xs: "1.3rem", sm: "1.8rem" },
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: 'bold',
-                color: '#fff'
-              }}>
-                PAYNEST
-              </Typography>
-              <Typography variant="body2" sx={{
-                fontFamily: 'Poppins, sans-serif',
-                color: '#fff',
-                letterSpacing: 1
-              }}>
-                PROFIT COMPANY
-              </Typography>
+              <Typography variant="h6" color="white" fontWeight="bold">Sanjay</Typography>
+              <Typography color="white">9977692577</Typography>
+              <Typography color="white" fontWeight="bold">User ID: 40109939</Typography>
             </Box>
+            <Avatar src="/avatar.png" alt="Profile" sx={{ width: 50, height: 50, backgroundColor: "rgba(255, 255, 255, 0.5)", border: "2px solid white" }} />
           </Box>
+        </Box>
 
-          <CustomTabs>
-            <CustomTab
-              onClick={() => handleTabChange(0, "#3babd9")}
-              selected={tabIndex === 0}
-              color="#3babd9"
-            >
-              Daily Earnings
-            </CustomTab>
-            <CustomTab
-              onClick={() => handleTabChange(1, "#3babd9")}
-              selected={tabIndex === 1}
-              color="#3babd9"
-            >
-              Monthly Earnings
-            </CustomTab>
-          </CustomTabs>
-
-          <Box sx={{
-            backgroundColor: tabColor,
-            borderRadius: "0 0 10px 10px",
-            mt: 0, // Removed margin-top to fix spacing
-            padding: { xs: 2, sm: 3 }
-          }}>
-            {tabIndex === 0 ? (
-              <>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  💰 Daily Earnings Introductory
-                </Typography>
-                <Typography>
-                  Investing in the first cycle product qualifies you for further benefits.
-                </Typography>
-              </>
-            ) : (
-              <>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  📅 Monthly Earnings Plan
-                </Typography>
-                <Typography>
-                  Earn returns monthly with our premium investment plan.
-                </Typography>
-              </>
-            )}
+        <Card sx={{ backgroundColor: "#e0f7fa", p: 2, borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2 }}>
+          <Box>
+            <Typography variant="body1" fontWeight="bold">Account Balance</Typography>
+            <Typography variant="h4" fontWeight="bold" sx={{ mt: 1 }}>₹0.00</Typography>
           </Box>
-          {tabIndex === 0 && (
-        <Grid container spacing={1} sx={{ padding: "20px", width: "100%" }}>
-          {investmentData.map((item, index) => (
-            <Grid item xs={12} sm={6} key={index}>
-              <InvestmentCard data={item} />
-            </Grid>
-          ))}
+          <Button variant="contained" sx={{ backgroundColor: "#26a69a", color: "white" }} onClick={handleRechargeClick}>Recharge →</Button>
+        </Card>
+
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          <Grid item xs={4}>
+            <Card sx={{ p: 2, textAlign: "center" }}>
+              <AccountBalanceWalletIcon color="primary" fontSize="large" />
+              <Typography>Withdraw</Typography>
+              <Typography>0.00</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={4}>
+            <Card sx={{ p: 2, textAlign: "center" }}>
+              <ReceiptIcon color="primary" fontSize="large" />
+              <Typography>Orders</Typography>
+              <Typography>0.00</Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={4}>
+            <Card
+              onClick={handleBankAccountClick}
+              sx={{ p: 2, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+            >
+              <AccountBalanceIcon color="primary" fontSize="large" />
+              <Typography>Bank Account</Typography>
+              <Typography variant="body2" sx={{ whiteSpace: "nowrap", fontSize: "0.8rem" }}>No Bank Linked</Typography>
+            </Card>
+          </Grid>
         </Grid>
-      )}
-        </CardContent>
-      </Card>
 
-      {/* Bottom Navigation */}
-      <BottomNavigation
-        sx={{
-          width: "100%",
-          position: "fixed",
-          bottom: 0,
-          backgroundColor: "white",
-          zIndex: 1000
-        }}
-        value={value}
-        onChange={handleBottomNavigationChange}
-      >
-        <BottomNavigationAction label="Invest" value="invest" icon={<MovingOutlinedIcon />} />
-        <BottomNavigationAction label="PrizeTask" value="prizetask" icon={<EmojiEventsOutlinedIcon />} />
-        <BottomNavigationAction label="Account" value="account" icon={<AccountCircleOutlinedIcon />} />
-      </BottomNavigation>
+        <Card sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(to right, #FFD700, #FFF5C3)", p: 2, borderRadius: "10px", mt: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Avatar sx={{ bgcolor: "#FFC107", mr: 1 }}>
+              <RedeemIcon sx={{ color: "white" }} />
+            </Avatar>
+            <Typography fontWeight="bold">Points: 0</Typography>
+          </Box>
+          <Button variant="text" sx={{ color: "#555", fontWeight: "bold", textTransform: "none" }}>Records →</Button>
+        </Card>
+
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" fontWeight="bold">Fund Entry</Typography>
+          {fundEntryItems.map((item) => (
+            <Card key={item.name} sx={{ p: 2, mt: 1, display: "flex", alignItems: "center" }}>
+              <Box sx={{ mr: 2 }}>{item.icon}</Box>
+              <Typography>{item.name}</Typography>
+            </Card>
+          ))}
+        </Box>
+      </Container>
+
+      <BankAccountPopup open={openPopup} onClose={() => setOpenPopup(false)} />
     </Box>
   );
 };
 
-export default FutureFundApp;
+export default Account;
+
+
+

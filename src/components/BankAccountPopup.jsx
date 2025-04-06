@@ -32,33 +32,53 @@ const BankAccountPopup = ({ open, onClose }) => {
         </Typography>
 
         <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddCircleOutlineIcon />}
-          fullWidth
-          sx={{ mt: 2, py: 1.5 }}
-          onClick={() => {
-            onClose(); // ✅ Close popup
-            navigate("/bank-card"); // ✅ Navigate to BankCardForm
-          }}
-        >
-          Link Bank Account
-        </Button>
+  fullWidth
+  variant="contained"
+  startIcon={<AddCircleOutlineIcon />}
+  onClick={() => {
+    onClose(); // ✅ Close popup
+    navigate("/bank-card"); // ✅ Navigate to BankCardForm
+  }}
+  sx={{
+    mt: 2,
+    py: 1,
+    fontWeight: 600,
+    fontSize: "14px",
+    background: "#156fb2",
+    color: "white",
+    borderRadius: "30px",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      background: "#125a8c",
+    },
+  }}
+>
+  Link Bank Account
+</Button>
 
-        <Box mt={3}>
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            Rule description
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            1. Your earnings withdrawals will be transferred to the linked bank account. Ensure your details are correct.
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            2. To modify your withdrawal bank account, you must provide an SMS verification code.
-          </Typography>
-          <Typography variant="body2">
-            3. If you can't receive the SMS verification code, contact our support team.
-          </Typography>
-        </Box>
+
+<Box mt={3}>
+  <Typography variant="subtitle1" fontWeight="bold" gutterBottom display="flex" alignItems="center">
+    Rule description
+  </Typography>
+  <Box sx={{ color: "#555", fontSize: "14px" }}>
+    {[
+      "Your earnings withdrawals will be transferred to the linked bank account. Ensure your details are correct.",
+      "To modify your withdrawal bank account, you must provide an SMS verification code.",
+      "If you can't receive the SMS verification code, contact our support team.",
+    ].map((rule, index) => (
+      <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mt: index === 0 ? 0 : 1 }}>
+        <Typography variant="body2" sx={{ minWidth: "20px", fontWeight: 600 }}>
+          {index + 1}.
+        </Typography>
+        <Typography variant="body2" sx={{ ml: 1 }}>
+          {rule}
+        </Typography>
+      </Box>
+    ))}
+  </Box>
+</Box>
+
       </DialogContent>
     </Dialog>
   );
