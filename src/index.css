@@ -71,6 +71,14 @@ button:focus-visible {
   }
 }
 
+* {
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;     /* IE10+ */
+}
 
-
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
 

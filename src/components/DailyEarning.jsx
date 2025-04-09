@@ -15,8 +15,10 @@ const DailyEarning = ({ data, onInvest }) => (
     sx={{
       background: "linear-gradient(to right, #f0f8f8, #eef7f7)",
       borderRadius: "10px",
-      padding: "5px",
+      padding: "0.5px",
       boxShadow: "none",
+      // width: "180px", // Adjust as needed
+      minWidth: "152px", // Ensures consistent width
     }}
   >
     <CardContent>
@@ -31,7 +33,7 @@ const DailyEarning = ({ data, onInvest }) => (
           <Typography sx={{ fontSize: "11px", color: "#333" }}>
             {label}
           </Typography>
-          <Typography sx={{ fontSize: "11px", color: "#666" }}>
+          <Typography sx={{ fontSize: "11px", color: "#666", fontWeight: "bold" }}>
             {data[keyMapping[label]] || "N/A"}
           </Typography>
         </Box>

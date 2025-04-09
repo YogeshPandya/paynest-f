@@ -1,123 +1,410 @@
-import React, { useState } from "react";
-import { Box, Typography, Card, Avatar, Grid, Button, IconButton, Container } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SettingsIcon from "@mui/icons-material/Settings";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import RedeemIcon from "@mui/icons-material/Redeem";
-import FeedbackIcon from "@mui/icons-material/Feedback";
-import BuildIcon from "@mui/icons-material/Build";
-import InfoIcon from "@mui/icons-material/Info";
-import PaymentIcon from "@mui/icons-material/Payment";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BankAccountPopup from "./BankAccountPopup";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  IconButton,
+  InputAdornment,
+  Card,
+  CardContent,
+  Avatar,
+  Grid,
+  FormControl,
+  OutlinedInput,
+  InputLabel,
+  Dialog,
+  DialogContent,
+  Slide,
+} from "@mui/material";
+import {
+  Visibility,
+  VisibilityOff,
+  PhoneIphone as PhoneIphoneIcon,
+  Key as KeyIcon,
+  Person as PersonIcon,
+  People as PeopleIcon,
+  Verified as VerifiedIcon,
+} from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import SmsIcon from "@mui/icons-material/Sms";
 
-const Account = () => {
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const SignupForm = () => {
   const navigate = useNavigate();
-  const [openPopup, setOpenPopup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
+  const [errors, setErrors] = useState({});
+  const [showOtpPopup, setShowOtpPopup] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState("");
+  const [captchaUrl, setCaptchaUrl] = useState("");
+  const [captchaText, setCaptchaText] = useState("");
+  const [smsCode, setSmsCode] = useState("");
+  const [timer, setTimer] = useState(0);
 
-  const fundEntryItems = [
-    { name: "Billing List", icon: <ReceiptIcon color="primary" /> },
-    { name: "Withdrawal Records", icon: <AccountBalanceWalletIcon color="primary" /> },
-    { name: "Recharge Records", icon: <PaymentIcon color="primary" /> },
-    { name: "Commission Records", icon: <MonetizationOnIcon color="primary" /> },
-    { name: "Reward Records", icon: <RedeemIcon color="primary" /> },
-    { name: "My Feedback", icon: <FeedbackIcon color="primary" /> },
-    { name: "Self-Service", icon: <BuildIcon color="primary" /> },
-    { name: "About Us", icon: <InfoIcon color="primary" /> }
-  ];
+  const validateForm = () => {
+    let newErrors = {};
 
-  const handleRechargeClick = () => {
-    navigate("/recharge");
+    if (!phone) {
+      newErrors.phone = "Phone number is mandatory";
+    } else if (!/^\d{10}$/.test(phone)) {
+      newErrors.phone = "Enter a valid 10-digit phone number";
+    }
+
+    if (!password) {
+      newErrors.password = "Set your login password";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (!name) {
+      newErrors.name = "Name is mandatory";
+    } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+      newErrors.name = "Name should contain only letters ex.(A-Z, a-z)";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleBankAccountClick = () => {
-    setOpenPopup(true);
+  const handleSubmit = () => {
+    if (validateForm()) {
+      setShowOtpPopup(true);
+    }
+  };
+
+  // Simulate captcha generation
+  useEffect(() => {
+    const randomText = Math.floor(1000 + Math.random() * 9000).toString(); // e.g., 1234
+    const imageUrl = `https://dummyimage.com/80x30/000/fff.png&text=${randomText}`;
+    setCaptchaText(randomText);
+    setCaptchaUrl(imageUrl);
+  }, []);
+
+  const handleCaptchaChange = (e) => {
+    setCaptchaValue(e.target.value);
+  };
+
+  const isCaptchaCorrect = captchaValue === captchaText;
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  const handleGetSmsCode = () => {
+    // Start countdown only if not already running
+    if (timer === 0) {
+      const generatedCode = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString(); // Generate 6-digit code
+      setSmsCode(generatedCode);
+      setTimer(180); // 180 seconds
+      // Trigger your SMS send logic here
+      console.log("SMS sent");
+    }
   };
 
   return (
-    <Box sx={{ width: "100vw", minHeight: "100vh", backgroundColor: "#156fb2", display: "flex", justifyContent: "center", alignItems: "center", padding: 2 }}>
-      <Container maxWidth="md" sx={{ backgroundColor: "white", borderRadius: "16px", boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)", padding: 3, position: "relative" }}>
-        <Box sx={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 1 }}>
-          <IconButton sx={{ backgroundColor: "#3babd9" }}><NotificationsIcon /></IconButton>
-          <IconButton sx={{ backgroundColor: "#3babd9" }}><SettingsIcon /></IconButton>
-        </Box>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      width="100vw"
+      sx={{ background: "linear-gradient(to bottom, #E3F2FD, #ffffff)" }}
+    >
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item xs={12} sm={8} md={5} lg={4}>
+          <Card
+            elevation={3}
+            sx={{
+              p: 4,
+              borderRadius: 4,
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+            }}
+          >
+            <CardContent>
+              <Box display="flex" justifyContent="center" mb={1}>
+                <Avatar
+                  src="/PN_logo.png"
+                  alt="Company Logo"
+                  sx={{ width: 80, height: 80, mt: -2 }}
+                />
+              </Box>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: "bold",
+                  color: "#3babd9",
+                  letterSpacing: 1.5,
+                  mt: -3,
+                }}
+              >
+                PAYNEST
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontFamily: "Poppins, sans-serif",
+                  color: "textSecondary",
+                  letterSpacing: 1,
+                  mt: -1,
+                  mb: 3,
+                }}
+              >
+                PROFIT COMPANY
+              </Typography>
 
-        <Box sx={{ background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", boxShadow: "0 4px 15px rgba(0, 242, 254, 0.3)", p: 2, borderRadius: "10px", position: "relative", textAlign: "left", marginTop: 6 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Box>
-              <Typography variant="h6" color="white" fontWeight="bold">Sanjay</Typography>
-              <Typography color="white">9977692577</Typography>
-              <Typography color="white" fontWeight="bold">User ID: 40109939</Typography>
-            </Box>
-            <Avatar src="/avatar.png" alt="Profile" sx={{ width: 50, height: 50, backgroundColor: "rgba(255, 255, 255, 0.5)", border: "2px solid white" }} />
-          </Box>
-        </Box>
+              <FormControl sx={{ width: "100%" }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-phone">
+                  Phone Number
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) =>
+                    setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                  }
+                  error={!!errors.phone}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <PhoneIphoneIcon color="primary" sx={{ mr: 1 }} />
+                      <Typography sx={{ fontWeight: "bold" }}>+91</Typography>
+                    </InputAdornment>
+                  }
+                  label="Phone Number"
+                  placeholder="Enter Your Mobile Number"
+                />
+              </FormControl>
+              {errors.phone && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ ml: 2, textAlign: "left", display: "block" }}
+                >
+                  {errors.phone}
+                </Typography>
+              )}
 
-        <Card sx={{ backgroundColor: "#e0f7fa", p: 2, borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2 }}>
-          <Box>
-            <Typography variant="body1" fontWeight="bold">Account Balance</Typography>
-            <Typography variant="h4" fontWeight="bold" sx={{ mt: 1 }}>₹0.00</Typography>
-          </Box>
-          <Button variant="contained" sx={{ backgroundColor: "#26a69a", color: "white" }} onClick={handleRechargeClick}>Recharge →</Button>
-        </Card>
+              <TextField
+                label="Your Name"
+                placeholder="Enter Your Name"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                error={!!errors.name}
+                helperText={errors.name}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={4}>
-            <Card sx={{ p: 2, textAlign: "center" }}>
-              <AccountBalanceWalletIcon color="primary" fontSize="large" />
-              <Typography>Withdraw</Typography>
-              <Typography>0.00</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={4}>
-            <Card sx={{ p: 2, textAlign: "center" }}>
-              <ReceiptIcon color="primary" fontSize="large" />
-              <Typography>Orders</Typography>
-              <Typography>0.00</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={4}>
-            <Card
-              onClick={handleBankAccountClick}
-              sx={{ p: 2, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
-            >
-              <AccountBalanceIcon color="primary" fontSize="large" />
-              <Typography>Bank Account</Typography>
-              <Typography variant="body2" sx={{ whiteSpace: "nowrap", fontSize: "0.8rem" }}>No Bank Linked</Typography>
-            </Card>
-          </Grid>
+              <TextField
+                label="Login Password"
+                placeholder="Set Login Password"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={!!errors.password}
+                helperText={errors.password}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <KeyIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <TextField
+                label="Invitation Code"
+                placeholder="Enter Invitation Code"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PeopleIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Box display="flex" justifyContent="space-between" mt={3} gap={2}>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate("/")}
+                  sx={{
+                    flex: 1,
+                    borderRadius: "25px",
+                    padding: "12px 0",
+                    borderColor: "#B0BEC5",
+                    color: "black",
+                    backgroundColor: "white",
+                    "&:hover": { backgroundColor: "#f0f0f0" },
+                  }}
+                >
+                  Log in
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit}
+                  sx={{
+                    flex: 1,
+                    borderRadius: "25px",
+                    padding: "12px 0",
+                    backgroundColor: "#3babd9",
+                    color: "white",
+                    "&:hover": { backgroundColor: "#156fb2" },
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
         </Grid>
+      </Grid>
 
-        <Card sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(to right, #FFD700, #FFF5C3)", p: 2, borderRadius: "10px", mt: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Avatar sx={{ bgcolor: "#FFC107", mr: 1 }}>
-              <RedeemIcon sx={{ color: "white" }} />
-            </Avatar>
-            <Typography fontWeight="bold">Points: 0</Typography>
-          </Box>
-          <Button variant="text" sx={{ color: "#555", fontWeight: "bold", textTransform: "none" }}>Records →</Button>
-        </Card>
+      {/* OTP Popup */}
+      <Dialog
+        open={showOtpPopup}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setShowOtpPopup(false)}
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "20px",
+            position: "absolute",
+            bottom: 0,
+            m: 0,
+          },
+        }}
+      >
+        <DialogContent>
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowOtpPopup(false)}
+            sx={{
+              color: (theme) => theme.palette.grey[500],
+              ml: "90%",
+              mt: "-1%",
+              mb: "1%",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <TextField
+            fullWidth
+            value={captchaValue}
+            onChange={handleCaptchaChange}
+            label="Enter CAPTCHA"
+            placeholder="Enter the text in image"
+            error={captchaValue && !isCaptchaCorrect}
+            helperText={
+              captchaValue && !isCaptchaCorrect ? "Captcha does not match" : ""
+            }
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <img
+                    src={captchaUrl}
+                    alt="captcha"
+                    style={{ height: 30, width: 80, borderRadius: 4 }}
+                  />
+                </InputAdornment>
+              ),
+            }}
+          />
 
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h6" fontWeight="bold">Fund Entry</Typography>
-          {fundEntryItems.map((item) => (
-            <Card key={item.name} sx={{ p: 2, mt: 1, display: "flex", alignItems: "center" }}>
-              <Box sx={{ mr: 2 }}>{item.icon}</Box>
-              <Typography>{item.name}</Typography>
-            </Card>
-          ))}
-        </Box>
-      </Container>
+          <TextField
+            gap={2}
+            margin="normal"
+            fullWidth
+            value={smsCode}
+            onChange={(e) => setSmsCode(e.target.value)}
+            label="Enter SMS Verification Code"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {timer > 0 ? (
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "grey", userSelect: "none" }}
+                    >
+                      {timer}s
+                    </Typography>
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: isCaptchaCorrect ? "blue" : "grey",
+                        cursor: isCaptchaCorrect ? "pointer" : "not-allowed",
+                        "&:hover": isCaptchaCorrect
+                          ? { textDecoration: "underline" }
+                          : {},
+                        userSelect: "none",
+                      }}
+                      onClick={() => {
+                        if (isCaptchaCorrect) {
+                          handleGetSmsCode();
+                        }
+                      }}
+                    >
+                      Get SMS Code
+                    </Typography>
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
 
-      <BankAccountPopup open={openPopup} onClose={() => setOpenPopup(false)} />
+          <Button variant="contained" fullWidth sx={{ mt: 4, borderRadius: 8 }}>
+            Confirm
+          </Button>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
 
-export default Account;
-
-
-
+export default SignupForm;

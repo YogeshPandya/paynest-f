@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -9,19 +10,43 @@ import {
   IconButton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate, useParams } from "react-router-dom";
 
-const List = ({ records = [] }) => {
-  const navigate = useNavigate();
+const dummyData = {
+  billing: [
+    { title: "Bill #001", description: "Paid on 2024-12-01" },
+    { title: "Bill #002", description: "Paid on 2024-12-05" },
+  ],
+  withdrawal: [
+    { title: "Withdrawal #123", description: "₹500 withdrawn" },
+    { title: "Withdrawal #124", description: "₹700 withdrawn" },
+  ],
+  recharge: [
+    { title: "Recharge ₹100", description: "Done on 2025-01-01" },
+    { title: "Recharge ₹200", description: "Done on 2025-01-10" },
+  ],
+  commission: [
+    { title: "Commission ₹50", description: "Earned on 2025-03-01" },
+  ],
+};
+
+const List = () => {
   const { type } = useParams();
+  const navigate = useNavigate();
+  const [records, setRecords] = useState([]);
+  console.log("Type from URL:", type);
+
+  useEffect(() => {
+    // Simulate fetching different data based on type
+    const fetchedData = dummyData[type] || [];
+    setRecords(fetchedData);
+  }, [type]);
 
   const formattedTitle = type
     ? type.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
     : "List";
 
   return (
-    <Box sx={{ width: "100vw", minHeight: "100vh", backgroundColor: "#f1f5f9", textAlign: "center" }}>
-      {/* Header with Blue Background */}
+    <Box sx={{ width: "100vw", minHeight: "100vh", backgroundColor: "#f1f5f9" }}>
       <Box
         sx={{
           display: "flex",
@@ -39,19 +64,11 @@ const List = ({ records = [] }) => {
         </Typography>
       </Box>
 
-      {/* Content */}
       <Box sx={{ width: "100%", maxWidth: 600, margin: "auto", mt: 4, p: 2 }}>
         {records.length === 0 ? (
-          <Box sx={{ textAlign: "center", mt: 6 }}>
-            <img
-              src="https://www.achieversacademyalwar.in/public/assets/images/no-record-found.png"
-              alt="No Records"
-              style={{ width: "120px", opacity: 0.6 }}
-            />
-            <Typography variant="body2" sx={{ color: "gray", mt: 2 }}>
-              No more.
-            </Typography>
-          </Box>
+          <Typography variant="body2" sx={{ color: "gray", mt: 4, textAlign: "center" }}>
+            No records found.
+          </Typography>
         ) : (
           <Paper elevation={0}>
             <MuiList>

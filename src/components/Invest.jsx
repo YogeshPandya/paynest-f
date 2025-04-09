@@ -8,7 +8,6 @@ import Footer from "./Footer";
 import Header from "./Header";
 import { investmentData, investmentMonthlyData } from "./Plandata";
 
-
 const Invest = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [value, setValue] = useState("invest");
@@ -50,7 +49,6 @@ const Invest = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          
         }}
       >
         {tabIndex === 0 ? (
@@ -61,7 +59,8 @@ const Invest = () => {
                 fontFamily: "sans-serif",
                 fontWeight: "bold",
                 mr: "7%",
-                mt: "3%", mb: "-2%",
+                mt: "3%",
+                mb: "-2%",
                 fontSize: { xs: "0.9rem", sm: "0.9rem" },
               }}
             >
@@ -93,12 +92,12 @@ const Invest = () => {
                   sx={{
                     padding: "10px",
                     width: "90%",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)", // White with transparency
-                    backdropFilter: "blur(10px)", // Blur effect
+                    backgroundColor: "rgba(255, 255, 255, 0.3)",
+                    backdropFilter: "blur(10px)",
                     borderRadius: "10px",
                     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                    border: "2px solid rgba(251, 250, 250, 0.2)", // Border added
-                    borderColor: "#fefeff", // Border color
+                    border: "2px solid rgba(251, 250, 250, 0.2)",
+                    borderColor: "#fefeff",
                   }}
                 >
                   {/* Group Title */}
@@ -113,7 +112,9 @@ const Invest = () => {
                   >
                     {index === 0
                       ? "Portfolio Investment Product A"
-                      : "Portfolio Investment Product B"}
+                      : index === 1
+                      ? "Portfolio Investment Product B"
+                      : "Portfolio Investment Product C"}
                   </Typography>
 
                   {/* Daily Earning Grid */}
@@ -124,7 +125,6 @@ const Invest = () => {
                   >
                     {group.map((item, itemIndex) => (
                       <Grid item xs={6} sm={6} key={itemIndex}>
-                        {/* Pass handleOpen function to DailyEarning */}
                         <DailyEarning data={item} onInvest={handleOpen} />
                       </Grid>
                     ))}
@@ -141,7 +141,8 @@ const Invest = () => {
                 fontFamily: "sans-serif",
                 fontWeight: "bold",
                 mr: "7%",
-                mt: "3%", mb: "-2%",
+                mt: "3%",
+                mb: "-2%",
                 fontSize: { xs: "0.9rem", sm: "0.9rem" },
               }}
             >
@@ -163,7 +164,7 @@ const Invest = () => {
           </>
         )}
       </Box>
-        
+
       {/* Popup Model for Investment Details */}
       <PopupModel
         open={open}

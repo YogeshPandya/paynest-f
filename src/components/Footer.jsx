@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import MovingOutlinedIcon from "@mui/icons-material/MovingOutlined";
 import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Footer = ({ value, onChange }) => {
+const Footer = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathToValue = (pathname) => {
+    if (pathname.startsWith("/prize-task")) return "prize-task";
+    if (pathname.startsWith("/account")) return "account";
+    return "invest"; // default
+  };
+
+  const [value, setValue] = useState(pathToValue(location.pathname));
+
+  useEffect(() => {
+    // Keep value in sync when path changes (e.g. via external navigation)
+    setValue(pathToValue(location.pathname));
+  }, [location.pathname]);
 
   const handleChange = (event, newValue) => {
-    onChange(newValue);
-    navigate(`/${newValue}`); // Navigate to respective page
+    setValue(newValue);
+    navigate(`/${newValue}`);
   };
+
+  // Now safely return null AFTER hooks are set up
+  const hideFooterPaths = ["/", "/login", "/signup", "/forget-password", "/loader","/billing", "/recharge-record", "/bank-card", "/withdraw-record", "/commission", "/feedback",
+                           "/about-us", "/self-service", "/user-settings", "/reset-payment-password", "/recharge"];
+  if (hideFooterPaths.includes(location.pathname)) {
+    return null;
+  }
 
   return (
     <Paper

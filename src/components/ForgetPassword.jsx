@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import { PhoneIphone, VpnKey, Visibility, VisibilityOff, ArrowBack } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ForgetPassword = () => {
   const [phone, setPhone] = useState("");
@@ -20,6 +20,7 @@ const ForgetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validateForm = () => {
     const newErrors = {};
@@ -36,6 +37,14 @@ const ForgetPassword = () => {
     }
   };
 
+  const handleBack = () => {
+    if (location.state?.from === "account") {
+      navigate("/account");
+    } else {
+      navigate("/"); // default to login
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -48,7 +57,7 @@ const ForgetPassword = () => {
       <Card sx={{ width: "450px", borderRadius: "10px", overflow: "hidden" }}>
         {/* Header Bar */}
         <Box sx={{ backgroundColor: "#3babd9", padding: "12px", display: "flex", alignItems: "center" }}>
-          <IconButton onClick={() => navigate("/")} sx={{ color: "white" }}>
+          <IconButton onClick={handleBack} sx={{ color: "white" }}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h6" color="white" sx={{ flexGrow: 1, textAlign: "center" }}>

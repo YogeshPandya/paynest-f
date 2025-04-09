@@ -47,11 +47,9 @@ html, body, #root {
   padding: 0;
 }
 
-
-*:focus:not(:focus-visible) {
-  outline: none;
-  box-shadow: none;
+* {
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;     /* IE10+ */
 }
-
-
 

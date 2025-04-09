@@ -20,6 +20,7 @@ const Header = ({ balance = 0 }) => {
       sx={{
         width: "100%",
         maxHeight: "100vh",
+        paddingTop: "8px",
         overflowX: "hidden",
         overflowY: "auto",
         display: "flex",

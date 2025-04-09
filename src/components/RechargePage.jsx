@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -22,20 +22,21 @@ const RechargePage = () => {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState("");
   const [selectedChannel, setSelectedChannel] = useState(null);
+  const inputRef = useRef(null);
 
-  const amountOptions = [100, 500, 1000, 3000, 5000, 10000];
+  const amountOptions = [100, 500, 1000, 3000, 10000, 50000];
   const paymentChannels = [
     {
       id: "channel1",
       name: "Payment Channel 1",
       minAmount: 100,
-      maxAmount: 10000,
+      maxAmount: 50000,
     },
     {
       id: "channel2",
       name: "Payment Channel 2",
       minAmount: 100,
-      maxAmount: 10000,
+      maxAmount: 100000,
     },
   ];
 
@@ -99,7 +100,10 @@ const RechargePage = () => {
             py: 0.5,
           }}
         >
-          <IconButton onClick={() => navigate("/account")} sx={{ color: "#fff" }}>
+          <IconButton
+            onClick={() => navigate("/account")}
+            sx={{ color: "#fff" }}
+          >
             <ArrowBackIcon />
           </IconButton>
           <Typography
@@ -133,13 +137,17 @@ const RechargePage = () => {
               Recharge amount
             </Typography>
             <TextField
+              inputRef={inputRef}
               fullWidth
               placeholder="Recharge amount"
               variant="outlined"
-              type="number"
               value={customAmount}
               onChange={handleCustomAmountChange}
               sx={{ mt: 1, mb: 2, backgroundColor: "#ffffff", borderRadius: 2 }}
+              inputProps={{
+                inputMode: "decimal", // Show number pad with '.' if needed
+                pattern: "[0-9]*", // Accept only numbers
+              }}
             />
 
             <Grid container spacing={1}>
@@ -147,13 +155,16 @@ const RechargePage = () => {
                 <Grid item xs={4} key={amount}>
                   <Button
                     fullWidth
-                    variant={selectedAmount === amount ? "contained" : "outlined"}
+                    variant={
+                      selectedAmount === amount ? "contained" : "outlined"
+                    }
                     onClick={() => handleAmountSelect(amount)}
                     sx={{
                       borderRadius: "50px",
                       fontWeight: 600,
                       fontSize: "13px",
-                      backgroundColor: selectedAmount === amount ? "#3babd9" : "#f0f7f6",
+                      backgroundColor:
+                        selectedAmount === amount ? "#3babd9" : "#f0f7f6",
                       color: selectedAmount === amount ? "#fff" : "#000",
                       transition: "all 0.3s ease",
                       "&:hover": {
@@ -169,7 +180,9 @@ const RechargePage = () => {
             </Grid>
 
             {/* Recharge Channel Section */}
-            <Box sx={{ backgroundColor: "#ffffff", borderRadius: 3, p: 2, mt: 3 }}>
+            <Box
+              sx={{ backgroundColor: "#ffffff", borderRadius: 3, p: 2, mt: 3 }}
+            >
               <Typography fontWeight={600} fontSize="15px" sx={{ mb: 1 }}>
                 Recharge Channel
               </Typography>
@@ -202,7 +215,8 @@ const RechargePage = () => {
                       }
                       secondary={
                         <Typography variant="body2" sx={{ color: "#666" }}>
-                          Amount Range: ₹{channel.minAmount} - ₹{channel.maxAmount}
+                          Amount Range: ₹{channel.minAmount} - ₹
+                          {channel.maxAmount}
                         </Typography>
                       }
                     />
@@ -244,7 +258,12 @@ const RechargePage = () => {
               borderRadius: "0 0 12px 12px",
             }}
           >
-            <Typography fontWeight={600} display="flex" alignItems="center" mb={1}>
+            <Typography
+              fontWeight={600}
+              display="flex"
+              alignItems="center"
+              mb={1}
+            >
               <InfoIcon color="primary" sx={{ mr: 1 }} /> Rule description
             </Typography>
             <Box sx={{ color: "#666", fontSize: "14px" }}>
@@ -256,8 +275,18 @@ const RechargePage = () => {
                 "Due to high traffic, recharge may fail. Please try again.",
                 "After a successful transfer, enter the correct UTR (12 digits).",
               ].map((rule, index) => (
-                <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mt: index === 0 ? 0 : 1 }}>
-                  <Typography variant="body2" sx={{ minWidth: "20px", fontWeight: 600 }}>
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    mt: index === 0 ? 0 : 1,
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ minWidth: "20px", fontWeight: 600 }}
+                  >
                     {index + 1}.
                   </Typography>
                   <Typography variant="body2" sx={{ ml: 1 }}>

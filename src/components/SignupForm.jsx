@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Box, Typography, IconButton, InputAdornment, Card,
-  CardContent, Avatar, Grid, FormControl, OutlinedInput, InputLabel } from "@mui/material";
+import {
+  TextField, Button, Box, Typography, IconButton, InputAdornment, Card,
+  CardContent, Avatar, Grid, FormControl, OutlinedInput, InputLabel
+} from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
@@ -10,6 +12,7 @@ import {
   Person as PersonIcon,
   People as PeopleIcon
 } from "@mui/icons-material";
+import OtpPopup from "./OtpPopup";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -20,25 +23,67 @@ const SignupForm = () => {
   const [inviteCode, setInviteCode] = useState("");
   const [errors, setErrors] = useState({});
 
+  // OTP dialog states
+  const [showOtpPopup, setShowOtpPopup] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState("");
+  const [captchaUrl, setCaptchaUrl] = useState(""); // Placeholder
+  const [captchaText, setCaptchaText] = useState("");
+  const [smsCode, setSmsCode] = useState("");
+  const [timer, setTimer] = useState(0);
+
+  // Simulate captcha generation
+    useEffect(() => {
+      const randomText = Math.floor(1000 + Math.random() * 9000).toString(); // e.g., 1234
+      const imageUrl = `https://dummyimage.com/80x30/000/fff.png&text=${randomText}`;
+      setCaptchaText(randomText);
+      setCaptchaUrl(imageUrl);
+    }, []);
+
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
+
+  const handleCaptchaChange = (e) => {
+    const value = e.target.value;
+    setCaptchaValue(value);
+  };
+  const isCaptchaCorrect = captchaValue === captchaText;
+
+  const handleGetSmsCode = () => {
+    if (timer === 0) {
+      const generatedCode = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit code
+      setTimer(180); // Start timer
+  
+      // Simulate delay for receiving SMS (2 seconds)
+      setTimeout(() => {
+        setSmsCode(generatedCode); // Set OTP after delay
+        console.log("SMS sent:", generatedCode); // Log for debugging
+      }, 2000);
+    }
+  };
+
   const validateForm = () => {
     let newErrors = {};
 
     if (!phone) {
-      newErrors.phone = "Phone number is required";
+      newErrors.phone = "Phone number is mandatory";
     } else if (!/^\d{10}$/.test(phone)) {
       newErrors.phone = "Enter a valid 10-digit phone number";
     }
 
     if (!password) {
-      newErrors.password = "Password is required";
+      newErrors.password = "Set your login password";
     } else if (password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
 
     if (!name) {
-      newErrors.name = "Name is required";
+      newErrors.name = "Name is mandatory";
     } else if (!/^[a-zA-Z\s]+$/.test(name)) {
-      newErrors.name = "Name should contain only letters";
+      newErrors.name = "Name should contain only letters ex.(A-Z, a-z)";
     }
 
     setErrors(newErrors);
@@ -47,7 +92,7 @@ const SignupForm = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      alert("Signup Successful!");
+      setShowOtpPopup(true); // Show OTP dialog
     }
   };
 
@@ -122,7 +167,7 @@ const SignupForm = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -147,13 +192,54 @@ const SignupForm = () => {
               />
 
               <Box display="flex" justifyContent="space-between" mt={3} gap={2}>
-                <Button variant="outlined" onClick={() => navigate("/")} sx={{ flex: 1, borderRadius: "25px", padding: "12px 0", borderColor: "#B0BEC5", color: "black", backgroundColor: "white", "&:hover": { backgroundColor: "#f0f0f0" } }}>Log in</Button>
-                <Button variant="contained" onClick={handleSubmit} sx={{ flex: 1, borderRadius: "25px", padding: "12px 0", backgroundColor: "#3babd9", color: "white", "&:hover": { backgroundColor: "#156fb2" } }}>Sign Up</Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate("/")}
+                  sx={{
+                    flex: 1,
+                    borderRadius: "25px",
+                    padding: "12px 0",
+                    borderColor: "#B0BEC5",
+                    color: "black",
+                    backgroundColor: "white",
+                    "&:hover": { backgroundColor: "#f0f0f0" }
+                  }}
+                >
+                  Log in
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit}
+                  sx={{
+                    flex: 1,
+                    borderRadius: "25px",
+                    padding: "12px 0",
+                    backgroundColor: "#3babd9",
+                    color: "white",
+                    "&:hover": { backgroundColor: "#156fb2" }
+                  }}
+                >
+                  Sign Up
+                </Button>
               </Box>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
+
+      {/* OTP and CAPTCHA Dialog */}
+      <OtpPopup
+        open={showOtpPopup}
+        onClose={() => setShowOtpPopup(false)}
+        captchaValue={captchaValue}
+        onCaptchaChange={handleCaptchaChange}
+        isCaptchaCorrect={isCaptchaCorrect}
+        captchaUrl={captchaUrl}
+        smsCode={smsCode}
+        setSmsCode={setSmsCode}
+        timer={timer}
+        handleGetSmsCode={handleGetSmsCode}
+      />
     </Box>
   );
 };
